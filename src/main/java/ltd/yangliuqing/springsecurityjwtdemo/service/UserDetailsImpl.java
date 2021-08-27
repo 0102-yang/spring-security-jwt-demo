@@ -1,12 +1,11 @@
 package ltd.yangliuqing.springsecurityjwtdemo.service;
 
-import java.util.Collection;
-import java.util.LinkedList;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserDetailsImpl implements UserDetails {
