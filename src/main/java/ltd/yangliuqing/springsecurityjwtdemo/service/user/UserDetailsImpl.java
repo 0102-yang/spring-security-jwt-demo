@@ -1,5 +1,7 @@
-package ltd.yangliuqing.springsecurityjwtdemo.service;
+package ltd.yangliuqing.springsecurityjwtdemo.service.user;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +10,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author yang
+ */
+@Getter
+@Setter
 public class UserDetailsImpl implements UserDetails {
 
     private String username;
@@ -23,12 +30,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     @Override
