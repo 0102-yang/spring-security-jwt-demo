@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import io.jsonwebtoken.Claims;
+import ltd.yangliuqing.springsecurityjwtdemo.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,12 +24,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * @author yang
  */
 @Component
-public class UuidWebTokenAuthenticationFilter extends OncePerRequestFilter {
+public class JwtWebTokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -38,17 +41,26 @@ public class UuidWebTokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("token");
-        token = (token != null) ? token : "";
-        String rawUserJson = this.stringRedisTemplate.opsForValue().get(token);
-        if (rawUserJson != null) {
+        Optional<Claims> claims = JwtUtils.getClaims(token);
+
+        if (claims.isPresent()) {
+            String username = claims.get().getSubject();
+            String rawUserJson = this.stringRedisTemplate.opsForValue().get(username);
             User user = parseUser(rawUserJson);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, token, user.getAuthorities());
+
+            // 验证成功,填充已被认证的证书
+            JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(user);
+            authenticationToken.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
+
         filterChain.doFilter(request, response);
     }
 
-    private User parseUser(String rawUserJson) throws JsonProcessingException {
+    private User parseUser(@Nullable String rawUserJson) throws JsonProcessingException {
+        rawUserJson = (rawUserJson != null) ? rawUserJson : "";
+
+        // 从Json字符串获取用户信息
         JsonNode fields = this.mapper.readTree(rawUserJson);
         BooleanNode accountNonExpired = (BooleanNode) fields.get("accountNonExpired");
         BooleanNode accountNonLocked = (BooleanNode) fields.get("accountNonLocked");

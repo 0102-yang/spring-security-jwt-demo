@@ -9,14 +9,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
-    @GetMapping("/authentication")
+    @GetMapping("/user")
     public String getAuth() {
-        return "authentication";
+        return "You have user or admin role";
+    }
+
+    @GetMapping("/admin")
+    public String getAdmin() {
+        return "You have admin role";
     }
 
     @GetMapping("/permit")
     public String getPermit() {
-        return "permit";
+        return "Everyone can see this message";
     }
 
 }

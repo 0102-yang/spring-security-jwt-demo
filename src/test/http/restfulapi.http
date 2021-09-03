@@ -1,5 +1,5 @@
-GET http://localhost:8080/authentication
-token: 1dd1dce9-c081-40a8-9efd-fef3e04b35e2
+GET http://localhost:8080/user
+token: eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJmZTU3NGNhYi01MzM1LTQ4ZmMtYWE2Yi0yN2MyNWQyMjE1MWIiLCJpc3MiOiJ5YW5nLTBGQkMiLCJpYXQiOjE2MzA2ODA4NTYsIm5iZiI6MTYzMDY4MDg1NiwiZXhwIjoxNjMxMjg1NjU2LCJzdWIiOiJ5YW5nIn0.Qmw8Gt3UobcLJbdI6UwdUqEGiie4B1WXN94-HeVbH8iFLXX4v8J2tqLhzElm7CiQO7U2g3-hhYpwehdCfdIzrA
 Accept: application/json
 
 ###
